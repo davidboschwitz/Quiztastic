@@ -35,7 +35,7 @@ app.get('/test/:name', function(req, res){
   rtn.name = name;
 req.session['name'] = name;
 //return the object in json format.
-  res.json(rtn);
+  res.json(req.session);
 });
 
 app.get("/test2", function(req, res){
@@ -43,7 +43,7 @@ app.get("/test2", function(req, res){
 
   rtn.name = req.session['name'];
 
-  res.json(rtn);
+res.json(req.session);
 });
 
 app.listen(3333, function () {
