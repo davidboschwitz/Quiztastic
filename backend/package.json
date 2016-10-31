@@ -1,0 +1,25 @@
+{
+  "name": "quiztastic",
+  "version": "1.0.1",
+  "description": "Backend for David's Quiztastic!",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "davidboschwitz",
+  "license": "ISC",
+  "dependencies": {
+    "connect-mongo": "^1.3.2",
+    "express": "^4.14.0",
+    "express-session": "^1.14.2"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidboschwitz/Quiztastic.git"
+  },
+  "bugs": {
+    "url": "https://github.com/davidboschwitz/Quiztastic/issues"
+  },
+  "homepage": "https://github.com/davidboschwitz/Quiztastic#readme"
+}
