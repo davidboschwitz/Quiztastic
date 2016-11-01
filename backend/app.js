@@ -7,7 +7,9 @@ const MongoStore = require('connect-mongo')(session);
 
 app.use(session({
     secret: 'foo',
-    store: new MongoStore({ url: 'mongodb://localhost/quiztastic' })
+    store: new MongoStore({
+        url: 'mongodb://localhost/quiztastic'
+    })
 }));
 
 
@@ -24,28 +26,42 @@ app.use(bodyParser.text({
     type: ''
 }));
 
-app.get('/', function (req, res) {
-  res.send('Hello World!');
+app.get('/', function(req, res) {
+    res.send('Hello World!');
 });
 
-app.get('/test/:name', function(req, res){
+app.post('/admin', function(req,res){
+
+});
+
+
+var indexMethods = {
+  update: function() {
+    return arguments;
+  }
+};
+app.post('/index', function(req,res){
+  res.send(indexMethods[req.body.method](req))
+});
+
+app.get('/test/:name', function(req, res) {
     var name = req.params.name;
-  var rtn = {};//init an object to return
-  //rtn.quiz = JSON.parse(fs.readFileSync('sample_questions.json'));
-  rtn.name = name;
-req.session['name'] = name;
-//return the object in json format.
-  res.json(req.session);
+    var rtn = {}; //init an object to return
+    //rtn.quiz = JSON.parse(fs.readFileSync('sample_questions.json'));
+    rtn.name = name;
+    req.session['name'] = name;
+    //return the object in json format.
+    res.json(req.session);
 });
 
-app.get("/test2", function(req, res){
-  var rtn = {};
+app.get("/test2", function(req, res) {
+    var rtn = {};
 
-  rtn.name = req.session['name'];
+    rtn.name = req.session['name'];
 
-res.json(req.session);
+    res.json(req.session);
 });
 
-app.listen(3333, function () {
-  console.log('Quiztastic backend listening on port 3333!');
+app.listen(3333, function() {
+    console.log('Quiztastic backend listening on port 3333!');
 });
