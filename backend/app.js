@@ -38,7 +38,10 @@ app.post('/admin', function(req, res) {
 var indexMethods = {
     update: function() {
         console.log(arguments);
-        return {blah:'pleh'}
+        return {
+            blah: 'pleh',
+            date:  new Date()
+        }
     }
 };
 app.post('/index', function(req, res) {
