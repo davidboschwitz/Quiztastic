@@ -30,21 +30,27 @@ app.get('/', function(req, res) {
     res.send('Hello World!');
 });
 
-app.post('/admin', function(req,res){
+app.post('/admin', function(req, res) {
 
 });
 
 
 var indexMethods = {
-  update: function() {
-    console.log( arguments);
-  }
+    update: function() {
+        console.log(arguments);
+        return {blah:'pleh'}
+    }
 };
-app.post('/index', function(req,res){
-  if(!indexMethods[req.body.method])
-    res.send({error:{code:500, message:"Method not found"}});
-  else
-    res.send(indexMethods[req.body.method](req))
+app.post('/index', function(req, res) {
+    if (!indexMethods[req.body.method])
+        res.send({
+            error: {
+                code: 500,
+                message: "Method not found"
+            }
+        });
+    else
+        res.send(indexMethods[req.body.method](req))
 });
 
 app.get('/test/:name', function(req, res) {
