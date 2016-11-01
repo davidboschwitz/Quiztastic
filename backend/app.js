@@ -41,7 +41,7 @@ var indexMethods = {
         return {
             blah: 'pleh',
             date:  new Date(),
-            date_fin:  new Date() + 60,
+            date_fin:  this.date.setSeconds(this.date.getSeconds() + 60),
         }
     }
 };
