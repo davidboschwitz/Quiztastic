@@ -38,10 +38,11 @@ app.post('/admin', function(req, res) {
 var indexMethods = {
     update: function() {
         console.log(arguments);
+        var date = new Date();
         return {
             blah: 'pleh',
-            date:  new Date(),
-            date_fin:  this.date.setSeconds(this.date.getSeconds() + 60),
+            date: date ,
+            date_fin:  date.setSeconds(date.getSeconds() + 60),
         }
     }
 };
