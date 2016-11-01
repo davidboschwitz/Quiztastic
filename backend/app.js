@@ -37,11 +37,14 @@ app.post('/admin', function(req,res){
 
 var indexMethods = {
   update: function() {
-    return arguments;
+    console.log( arguments);
   }
 };
 app.post('/index', function(req,res){
-  res.send(indexMethods[req.body.method](req))
+  if(!indexMethods[req.body.method])
+    res.send({error:{code:500, message:"Method not found"}});
+  else
+    res.send(indexMethods[req.body.method](req))
 });
 
 app.get('/test/:name', function(req, res) {
