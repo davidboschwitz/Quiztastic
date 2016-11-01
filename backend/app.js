@@ -40,7 +40,8 @@ var indexMethods = {
         console.log(arguments);
         return {
             blah: 'pleh',
-            date:  new Date()
+            date:  new Date(),
+            date_fin:  new Date() + 60,
         }
     }
 };
