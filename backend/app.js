@@ -41,8 +41,8 @@ var indexMethods = {
         var date = new Date();
         return {
             blah: 'pleh',
-            date: date ,
-            date_fin:  date.setSeconds(date.getSeconds() + 60),
+            date: date,
+            date_fin: date.setSeconds(date.getSeconds() + 60).toString(),
         }
     }
 };
@@ -57,6 +57,17 @@ app.post('/index', function(req, res) {
     else
         res.send(indexMethods[req.body.method](req))
 });
+
+app.get('/pair/:code', function(req, res) {
+    req.session['code'] = req.params.code;
+    res.send({
+        status: {
+          code: 200,
+          message: 'ok'
+        },
+        code: req.session['code']
+    })
+})
 
 app.get('/test/:name', function(req, res) {
     var name = req.params.name;

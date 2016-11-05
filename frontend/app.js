@@ -1,11 +1,13 @@
 function httpService($http) {
     this.get = function(url) {
-        return $http.get(url);
+        return $http.get(endpoint + url);
     }
     this.post = function(url, data) {
-        return $http.post(url, data);
+        return $http.post(endpoint + url, data);
     }
 }
+
+var endpoint = 'http://localhost:3333/';
 
 angular.module('quizApp', [])
     .service('httpService', httpService)
@@ -19,8 +21,14 @@ angular.module('quizApp', [])
 
         var methods = {
             collection: collection,
-            get: function() {
-
+            get: function(url) {
+                return httpService.get(url);
+            },
+            post: function(url, payload) {
+                return httpService.post(url, payload);
+            },
+            pair: function(code) {
+                return httpService.get('/pair/' + code);
             }
         };
 
@@ -31,13 +39,16 @@ angular.module('quizApp', [])
 
         $scope.data = {};
         $scope.data.questions = [];
-        httpService.get("http://vps.boschwitz.me:3333/")
+        httpService.get("/QuizController")
             .then(function(response) {
                 $scope.data = response.data;
             });
 
     })
     .controller('PresenterController', function($scope, io, $interval) {
+
+        $scope.showMain = 'hide';
+        $scope.showPair = 'show';
         $scope.data = {
             title: "Quiz Blah Blah blah",
             question: {
@@ -67,6 +78,12 @@ angular.module('quizApp', [])
                 return;
             $scope.timeLeft--;
         }, 1000);
+
+        $scope.pair = function() {
+            io.pair($scope.code);
+            $scope.showMain = 'show';
+            $scope.showPair = 'hide';
+        }
     })
     .controller('AdminController', function($scope, io) {
 

@@ -5,13 +5,13 @@
     <div ng-controller="PresenterController">
         <h1 style="text-align:center;font-weight:200">{{data.question.title || data.title}}</h1>
         <hr/>
-        <div class="container">
+        <div ng-class="['container', showMain]">
             <div class="row">
                 <div class="col m6" ng-repeat="a in data.question.answers">
                     <div class="card" style="background-color:{{a.color}}; color:white;">
                         <div class="card-content" style="min-height: 200px; display: table; width: 100%;">
                             <div class="card-title" style="text-align: center; display: table-cell; vertical-align: middle; font-size: 64px; font-weight: 100;">
-                              {{a.title}}
+                                {{a.title}}
                             </div>
                             <hr ng-if="a.text" />
                             <p ng-if="a.text">
@@ -23,22 +23,30 @@
             </div>
             <hr/>
             <div class="row">
-              <h3 style="text-align:center;font-weight:300">{{Math.floor(timeLeft / 60)}}:{{timeLeft % 60}}</h3>
+                <h3 style="text-align:center;font-weight:300">{{Math.floor(timeLeft / 60)}}:{{timeLeft % 60}}</h3>
+            </div>
+        </div>
+        <div ng-class="['container', showPair]">
+            <div class="row">
+                <label for="code">Pairing Code</label>
+                <input type="text" name="code" id="code" ng-model="code" />
+                <button class="btn waves-light" ng-click="pair()">Pair</button>
+
             </div>
         </div>
 
     </div>
 
     <!-- include script tags -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="assets/jquery/jquery-2.1.1.min.js"></script>
     <!-- This page's angular set-up -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js"></script>
+    <script type="text/javascript" src="assets/angular-1.5.3/angular.min.js"></script>
     <script type="text/javascript" src="app.js"></script>
     <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+    <link rel="stylesheet" href="assets/materialize/css/materialize.min.css">
     <link rel="stylesheet" href="style.css">
     <!-- Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+    <script src="assets/materialize/js/materialize.min.js"></script>
 
 </body>
 

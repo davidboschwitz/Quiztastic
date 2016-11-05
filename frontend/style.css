@@ -5,3 +5,11 @@ hr {
     border-style: solid;
     border-color: #ddd;
 }
+
+
+.show {
+  display: block;
+}
+.hide {
+  display: none;
+}
