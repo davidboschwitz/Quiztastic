@@ -88,7 +88,7 @@ var indexMethods = {
         var req = arguments[0];
         var code = req.session['code'];
         console.log(code)
-        if (!!data[code]) {
+        if (!data[code]) {
             data[code] = {};
             var quizID = req.body.quizID;
             data[code] = fs.readFileSync('/quizzes/' + quizID + '.json');
