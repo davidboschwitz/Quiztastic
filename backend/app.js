@@ -91,7 +91,7 @@ var indexMethods = {
         if (!data[code]) {
             data[code] = {};
             var quizID = req.body.quizID;
-            data[code] = fs.readFileSync('/quizzes/' + quizID + '.json');
+            data[code] = fs.readFileSync('quizzes/' + quizID + '.json');
             data[code].position = {
                 num: 0,
                 sub: 'intermission'
