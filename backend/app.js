@@ -16,6 +16,7 @@ app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', 'http://localhost');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
+    res.header('Access-Control-Allow-Credentials', 'true');
 
     next();
 });
@@ -86,6 +87,7 @@ var indexMethods = {
     start: function() {
         var req = arguments[0];
         var code = req.session['code'];
+        console.log(code)
         if (!!data[code]) {
             data[code] = {};
             var quizID = req.body.quizID;

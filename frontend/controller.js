@@ -10,6 +10,19 @@ function httpService($http) {
 var endpoint = 'http://vps.boschwitz.me:3333/';
 
 angular.module('quizApp', [])
+    .config(['$httpProvider', function($httpProvider) {
+            $httpProvider.interceptors.push(['$q',
+                function($q) {
+                    return {
+                        request: function(config) {
+                            config.withCredentials = true;
+                            return config;
+                        }
+                    };
+                }
+            ]);
+        }
+    ])
     .service('httpService', httpService)
     .factory('io', function(httpService) {
 
@@ -52,7 +65,7 @@ angular.module('quizApp', [])
 
     })
     .controller('PresenterController', function($scope, io, $interval) {
-      window.io = io;
+        window.io = io;
         $scope.io = io;
         $scope.showClass = 'pair';
         $scope.data = {
