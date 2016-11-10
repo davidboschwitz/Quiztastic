@@ -42,7 +42,7 @@ app.post('/admin', function(req, res) {
 
 });
 
-var data = {};
+var data = {blah: 'sdf'};
 
 var indexMethods = {
 
