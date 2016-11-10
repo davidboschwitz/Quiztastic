@@ -115,6 +115,7 @@ var indexMethods = {
     }
 };
 app.post('/index', function(req, res) {
+  console.log('index:'+req.body.method);
     if (!indexMethods[req.body.method])
         res.send({
             error: {

@@ -31,10 +31,10 @@ angular.module('quizApp', [])
                 if (payload == undefined)
                     payload = {};
                 payload.method = method;
-                return this.post('/index', payload);
+                return this.post('index', payload);
             },
             pair: function(code) {
-                return httpService.get('/pair/' + code);
+                return httpService.get('pair/' + code);
             }
         };
 
@@ -52,6 +52,7 @@ angular.module('quizApp', [])
 
     })
     .controller('PresenterController', function($scope, io, $interval) {
+      window.io = io;
         $scope.io = io;
         $scope.showClass = 'pair';
         $scope.data = {
