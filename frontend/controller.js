@@ -7,7 +7,7 @@ function httpService($http) {
     }
 }
 
-var endpoint = 'http://localhost:3333/';
+var endpoint = 'http://vps.boschwitz.me:3333/';
 
 angular.module('quizApp', [])
     .service('httpService', httpService)
