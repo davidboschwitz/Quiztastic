@@ -1,0 +1,23 @@
+{
+    "title": "Quiz Blah Blah blah",
+    "questions": [{
+        "title": "What color is the sky?",
+        "answers": [{
+            "title": "blue",
+            "color": "#337ab7",
+            "points": 1
+        }, {
+            "title": "red",
+            "color": "#c9302c",
+            "points": 0
+        }, {
+            "title": "yellow",
+            "color": "#ec971f",
+            "points": 0
+        }, {
+            "title": "green",
+            "color": "#5cb85c",
+            "points": 0
+        }]
+    }]
+}

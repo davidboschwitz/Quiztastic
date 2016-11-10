@@ -2,10 +2,10 @@
 <html>
 
 <body ng-app="quizApp" ng-cloak style="background-color:#fbfbfb">
-    <div ng-controller="PresenterController">
-        <h1 style="text-align:center;font-weight:200">{{data.question.title || data.title}}</h1>
+    <div ng-controller="PresenterController" ng-class="[showClass]">
+        <h1 style="text-align:center;font-weight:200">{{data.title}}</h1>
         <hr/>
-        <div ng-class="['container', showMain]">
+        <div class="container showQuestion">
             <div class="row">
                 <div class="col m6" ng-repeat="a in data.question.answers">
                     <div class="card" style="background-color:{{a.color}}; color:white;">
@@ -26,22 +26,48 @@
                 <h3 style="text-align:center;font-weight:300">{{Math.floor(timeLeft / 60)}}:{{timeLeft % 60}}</h3>
             </div>
         </div>
-        <div ng-class="['container', showPair]">
+        <div class="container showPair">
             <div class="row">
-                <label for="code">Pairing Code</label>
-                <input type="text" name="code" id="code" ng-model="code" />
+                <div class="input-field">
+                    <label for="code">Pairing Code</label>
+                    <input type="text" name="code" id="code" ng-model="code" />
+                </div>
+                <div class="input-field">
+                    <label for="quizID">Quiz-ID</label>
+                    <input type="text" name="quizID" id="quizID" ng-model="quizID" />
+                </div>
                 <button class="btn waves-light" ng-click="pair()">Pair</button>
 
             </div>
         </div>
+        <div class="container showIntermission">
+            <div class="row">
+                <table class="striped">
+                    <thead>
+                        <tr>
+                            <th data-field="Name">Name</th>
+                            <th data-field="Answer">Answer</th>
+                            <th data-field="Points">Points</th>
+                        </tr>
+                    </thead>
 
+                    <tbody>
+                        <tr ng-repeat="a in data.answers">
+                            <td>{{a.name}}</td>
+                            <td>{{data.question.answers[a.choice].title}}</td>
+                            <td>{{data.question.answers[a.choice].points}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <!-- include script tags -->
     <script type="text/javascript" src="assets/jquery/jquery-2.1.1.min.js"></script>
     <!-- This page's angular set-up -->
     <script type="text/javascript" src="assets/angular-1.5.3/angular.min.js"></script>
-    <script type="text/javascript" src="app.js"></script>
+    <script type="text/javascript" src="controller.js"></script>
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="assets/materialize/css/materialize.min.css">
     <link rel="stylesheet" href="style.css">

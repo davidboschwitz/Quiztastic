@@ -34,16 +34,77 @@ app.post('/admin', function(req, res) {
 
 });
 
+var data = {};
 
 var indexMethods = {
+
     update: function() {
         console.log(arguments);
+        var req = arguments[0];
+        var code = req.session['code'];
+        var current = data[code];
+        if (current.position.sub == 'intermission') {
+            var rtn = {};
+            rtn.title = 'And the answer is...';
+            rtn.showClass = 'intermission';
+            rtn.answers = current.answers[current.position.num];
+            rtn.question = current.questions[current.position.num];
+            rtn.users = current.users;
+            return rtn;
+        } else if (current.position.sub == 'question') {
+
+            return {
+                title: current.questions[current.position.num].title,
+                question: current.questions[current.position.num],
+                showClass: 'question'
+            };
+        }
         var date = new Date();
         return {
             blah: 'pleh',
             date: date,
             date_fin: date.setSeconds(date.getSeconds() + 60).toString(),
         }
+    },
+    next: function() {
+        position = data[code].position;
+        if (position.sub == 'intermission') {
+            position.sub = 'question';
+            data[code].answers[position.sub + 1] = {};
+        } else if (position.sub == 'question') {
+            position.num++;
+            position.sub = 'intermission';
+        }
+    },
+    start: function() {
+        var req = arguments[0];
+        var code = req.session['code'];
+        if (!!data[code]) {
+            data[code] = {};
+            var quizID = req.body.quizID;
+            data[code] = fs.readFileSync('/quizzes/' + quizID + '.json');
+            data[code].position = {
+                num: 0,
+                sub: 'intermission'
+            };
+            return {
+                status: {
+                    code: 200,
+                    message: 'ok'
+                }
+            };
+
+        } else {
+            return {
+                error: {
+                    code: 0,
+                    message: 'Session already initialized'
+                }
+            };
+        }
+    },
+    output: function() {
+      return data;
     }
 };
 app.post('/index', function(req, res) {
@@ -62,8 +123,8 @@ app.get('/pair/:code', function(req, res) {
     req.session['code'] = req.params.code;
     res.send({
         status: {
-          code: 200,
-          message: 'ok'
+            code: 200,
+            message: 'ok'
         },
         code: req.session['code']
     })

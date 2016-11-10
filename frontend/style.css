@@ -13,3 +13,27 @@ hr {
 .hide {
   display: none;
 }
+
+.showPair {
+  display: none;
+}
+
+.pair>.showPair {
+  display: block;
+}
+
+.showQuestion {
+  display: none;
+}
+
+.question>.showQuestion {
+  display: block;
+}
+
+.showIntermission {
+  display: none;
+}
+
+.intermission>.showIntermission {
+  display: block;
+}
