@@ -128,6 +128,7 @@ app.post('/index', function(req, res) {
 });
 
 app.get('/pair/:code', function(req, res) {
+  console.log('pair/'+req.params.code);
     req.session['code'] = req.params.code;
     res.send({
         status: {
