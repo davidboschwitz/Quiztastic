@@ -13,8 +13,8 @@ app.use(session({
 }));
 
 app.use(function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', 'http://localhost');
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+    res.header('Access-Control-Allow-Origin', 'http://dbosch-surface');
+    res.header('Access-Control-Allow-Methods', 'GET,POST');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     res.header('Access-Control-Allow-Credentials', 'true');
 
@@ -42,82 +42,9 @@ app.post('/admin', function(req, res) {
 
 });
 
-var data = {blah: 'sdf'};
-
-var indexMethods = {
-
-    update: function() {
-        console.log(arguments);
-        var req = arguments[0];
-        var code = req.session['code'];
-        var current = data[code];
-        if (current.position.sub == 'intermission') {
-            var rtn = {};
-            rtn.title = 'And the answer is...';
-            rtn.showClass = 'intermission';
-            rtn.answers = current.answers[current.position.num];
-            rtn.question = current.questions[current.position.num];
-            rtn.users = current.users;
-            return rtn;
-        } else if (current.position.sub == 'question') {
-
-            return {
-                title: current.questions[current.position.num].title,
-                question: current.questions[current.position.num],
-                showClass: 'question'
-            };
-        }
-        var date = new Date();
-        return {
-            blah: 'pleh',
-            date: date,
-            date_fin: date.setSeconds(date.getSeconds() + 60).toString(),
-        }
-    },
-    next: function() {
-        position = data[code].position;
-        if (position.sub == 'intermission') {
-            position.sub = 'question';
-            data[code].answers[position.sub + 1] = {};
-        } else if (position.sub == 'question') {
-            position.num++;
-            position.sub = 'intermission';
-        }
-    },
-    start: function() {
-        var req = arguments[0];
-        var code = req.session['code'];
-        console.log(code)
-        if (!data[code]) {
-            data[code] = {};
-            var quizID = req.body.quizID;
-            data[code] = fs.readFileSync('quizzes/' + quizID + '.json');
-            data[code].position = {
-                num: 0,
-                sub: 'intermission'
-            };
-            return {
-                status: {
-                    code: 200,
-                    message: 'ok'
-                }
-            };
-
-        } else {
-            return {
-                error: {
-                    code: 0,
-                    message: 'Session already initialized'
-                }
-            };
-        }
-    },
-    output: function() {
-      return data;
-    }
-};
+var indexMethods = require('./api-methods');
 app.post('/index', function(req, res) {
-  console.log('index:'+req.body.method);
+    console.log('index:' + req.body.method);
     if (!indexMethods[req.body.method])
         res.send({
             error: {
@@ -129,8 +56,8 @@ app.post('/index', function(req, res) {
         res.send(indexMethods[req.body.method](req))
 });
 
-app.get('/pair/:code', function(req, res) {
-  console.log('pair/'+req.params.code);
+app.get('/pair/:code/:name', function(req, res) {
+    console.log('pair/' + req.params.code);
     req.session['code'] = req.params.code;
     res.send({
         status: {

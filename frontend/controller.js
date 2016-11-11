@@ -11,19 +11,21 @@ var endpoint = 'http://vps.boschwitz.me:3333/';
 
 angular.module('quizApp', [])
     .config(['$httpProvider', function($httpProvider) {
-            $httpProvider.interceptors.push(['$q',
-                function($q) {
-                    return {
-                        request: function(config) {
-                            config.withCredentials = true;
-                            return config;
-                        }
-                    };
-                }
-            ]);
-        }
-    ])
+        $httpProvider.interceptors.push(['$q',
+            function($q) {
+                return {
+                    request: function(config) {
+                        config.withCredentials = true;
+                        return config;
+                    }
+                };
+            }
+        ]);
+    }])
     .service('httpService', httpService)
+    .service('Materialize', function() {
+        return Materialize;
+    })
     .factory('io', function(httpService) {
 
         var collection = [];
@@ -40,72 +42,155 @@ angular.module('quizApp', [])
             post: function(url, payload) {
                 return httpService.post(url, payload);
             },
-            method: function(method, payload) {
+            api: function(method, payload) {
                 if (payload == undefined)
                     payload = {};
                 payload.method = method;
                 return this.post('index', payload);
             },
-            pair: function(code) {
-                return httpService.get('pair/' + code);
+            join: function(pairCode, name) {
+                return this.api('join', {
+                    pairCode: pairCode,
+                    name: name
+                });
+            },
+            update: function() {
+                return this.api('update');
             }
         };
 
         return methods;
     })
-    .controller('QuizController', function($scope, io) {
-
-
+    .factory('update', function(io, $timeout) {
+        return function($scope) {
+            $scope.updating = true;
+            $timeout(function($scope) {
+                io.update().then(function(res) {
+                    $scope.data = res.data;
+                    $scope.updating = false
+                })
+            }, 500, true, $scope);
+        };
+    })
+    .controller('QuizController', function($scope, io, update, $interval) {
         $scope.data = {};
-        $scope.data.questions = [];
-        httpService.get("/QuizController")
-            .then(function(response) {
-                $scope.data = response.data;
+        $scope.data.showClass = 'pair';
+        $scope.update = update;
+
+        var updateInterval;
+
+        $scope.join = function() {
+            io.join($scope.code, $scope.name).then(function(res) {
+                $scope.userID = res.userID;
+                $scope.answerFilter = {
+                    userID: $scope.userID,
+                    choice: '',
+                    $: ''
+                };
             });
+            update($scope);
+
+            updateInterval = $interval(function() {
+                update($scope);
+                if ($scope.data.showClass == 'end')
+                    $interval.cancel(updateInterval);
+            }, 1000);
+        }
+
+        window.stopRefresh = function() {
+            $interval.cancel(updateInterval);
+        }
+
+        $scope.answer = function(choice) {
+            console.log('answer', choice);
+            io.api('answer', {
+                choice: choice
+            });
+            window.location.href = '#' + choice;
+        }
 
     })
-    .controller('PresenterController', function($scope, io, $interval) {
-        window.io = io;
-        $scope.io = io;
-        $scope.showClass = 'pair';
-        $scope.data = {
-            title: "Quiz Blah Blah blah",
-            question: {
-                title: "What color is the sky?",
-                answers: [{
-                    title: "blue",
-                    //text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                    color: "#337ab7"
-                }, {
-                    title: "red",
-                    //text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                    color: "#c9302c"
-                }, {
-                    title: "yellow",
-                    // text: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-                    color: "#ec971f"
-                }, {
-                    title: "green",
-                    color: "#5cb85c"
-                }]
-            }
-        };
-        $scope.timeLeft = 80;
+    .controller('PresenterController', function($scope, io, $interval, $timeout, update) {
+        window.io = $scope.io = io;
+        $scope.data = {};
+        $scope.data.showClass = 'pair';
+
         $scope.Math = Math;
         $interval(function() {
-            if ($scope.timeLeft == 0)
+            if ($scope.data.time == 0)
+                $scope.next();
+            if ($scope.data.time < 0 || $scope.data.time == NaN)
                 return;
-            $scope.timeLeft--;
+            $scope.data.time--;
         }, 1000);
 
         $scope.pair = function() {
-            io.pair($scope.code);
-            io.method('start', {
-                quizID: $scope.quizID
+            io.api('start', {
+                quizID: $scope.quizID,
+                pairCode: $scope.code
             });
-            $scope.showClass = 'main';
+            //$scope.showClass = 'main';
+            update($scope);
         }
-    })
-    .controller('AdminController', function($scope, io) {
 
+        $scope.next = function() {
+            $scope.data.time = -1;
+            io.api('next');
+            update($scope);
+        }
+
+        window.update = function() {
+            update($scope)
+        };
+        window.outputScope = function() {
+            console.log($scope)
+        };
+
+    })
+    .controller('AdminController', function($scope, io, Materialize, $timeout) {
+        $scope.data = {};
+        $scope.data.questions = [];
+
+
+        $scope.loadQuiz = function() {
+            if (!$scope.quizID)
+                return;
+            io.api('load', {
+                quizID: $scope.quizID
+            }).then(function(res) {
+                $scope.data = res.data;
+                $timeout(Materialize.updateTextFields, 500)
+            })
+        };
+
+        $scope.saveQuiz = function() {
+            if (!$scope.quizID)
+                return;
+            console.log($scope.quizID, $scope.data);
+            io.api('save', {
+                quizID: $scope.quizID,
+                data: $scope.data
+            })
+
+        }
+
+        $scope.newQuestion = function() {
+            $scope.data.questions.push({
+                answers: [],
+                time: 30
+            });
+            $timeout(Materialize.updateTextFields, 500)
+        }
+
+        var defaultColors = ['#337ab7', '#c9302c', '#ec971f', '#5cb85c', '#5bc0de', '#6f5499']
+        $scope.newAnswer = function(answers) {
+            answers.push({
+                color: defaultColors[answers.length] || '#000000'
+            });
+        }
+        console.log(Materialize);
     });
+
+function updateMaterializeText() {
+    Materialize.updateTextFields();
+}

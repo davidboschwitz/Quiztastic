@@ -2,6 +2,7 @@
     "title": "Quiz Blah Blah blah",
     "questions": [{
         "title": "What color is the sky?",
+        "time": 30,
         "answers": [{
             "title": "blue",
             "color": "#337ab7",
@@ -16,6 +17,26 @@
             "points": 0
         }, {
             "title": "green",
+            "color": "#5cb85c",
+            "points": 0
+        }]
+    }, {
+       "title": "Which of the following is the letter C?",
+       "time": 30,
+        "answers": [{
+            "title": "A",
+            "color": "#337ab7",
+            "points": 0
+        }, {
+            "title": "B",
+            "color": "#c9302c",
+            "points": 0
+        }, {
+            "title": "C",
+            "color": "#ec971f",
+            "points": 1
+        }, {
+            "title": "D",
             "color": "#5cb85c",
             "points": 0
         }]

@@ -1,8 +1,9 @@
 <!doctype html>
 <html>
-
+<head>
+</head>
 <body ng-app="quizApp" ng-cloak style="background-color:#fbfbfb">
-    <div ng-controller="PresenterController" ng-class="[showClass]">
+    <div ng-controller="PresenterController" ng-class="[data.showClass]">
         <h1 style="text-align:center;font-weight:200">{{data.title}}</h1>
         <hr/>
         <div class="container showQuestion">
@@ -23,7 +24,7 @@
             </div>
             <hr/>
             <div class="row">
-                <h3 style="text-align:center;font-weight:300">{{Math.floor(timeLeft / 60)}}:{{timeLeft % 60}}</h3>
+                <h3 style="text-align:center;font-weight:300">{{Math.floor(data.time / 60)}}:{{data.time % 60}}</h3>
             </div>
         </div>
         <div class="container showPair">
@@ -33,7 +34,7 @@
                     <input type="text" name="code" id="code" ng-model="code" />
                 </div>
                 <div class="input-field">
-                    <label for="quizID">Quiz-ID</label>
+                    <label for="quizID">Question Set ({{quizID}})</label>
                     <input type="text" name="quizID" id="quizID" ng-model="quizID" />
                 </div>
                 <button class="btn waves-light" ng-click="pair()">Pair</button>
@@ -52,14 +53,46 @@
                     </thead>
 
                     <tbody>
-                        <tr ng-repeat="a in data.answers">
-                            <td>{{a.name}}</td>
+                        <tr ng-repeat="a in data.answers | orderBy: 'data.question.answers[a.choice].points'">
+                            <td>{{data.users[a.userID].name}}</td>
                             <td>{{data.question.answers[a.choice].title}}</td>
                             <td>{{data.question.answers[a.choice].points}}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
+        </div>
+        <div class="container showBeginning">
+            <div class="row">
+                The quiz will begin soon...<br/>
+                Use pairing code {{code}} to join this session.
+            </div>
+        </div>
+        <div class="container showEnd">
+            <div class="row">
+              <table class="striped">
+                  <thead>
+                      <tr>
+                          <th data-field="Place">Place</th>
+                          <th data-field="Name">Name</th>
+                          <th data-field="Points">Total Points</th>
+                      </tr>
+                  </thead>
+
+                  <tbody>
+                      <tr ng-repeat="u in data.users | orderBy:'u.points'">
+                          <td>{{$index + 1}}</td>
+                          <td>{{u.name}}</td>
+                          <td>{{u.points}}</td>
+                      </tr>
+                  </tbody>
+              </table>
+            </div>
+        </div>
+        <div class="fixed-action-btn">
+            <a class="btn-floating btn-large red" ng-click="next()" ng-disabled="updating">
+                <i class="large material-icons" style="transform:rotate(90deg)">navigation</i>
+            </a>
         </div>
     </div>
 
@@ -73,6 +106,8 @@
     <link rel="stylesheet" href="style.css">
     <!-- Compiled and minified JavaScript -->
     <script src="assets/materialize/js/materialize.min.js"></script>
+
+     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
 </body>
 

@@ -14,6 +14,10 @@ hr {
   display: none;
 }
 
+.pop-answer:target {
+  box-shadow: 0 5px 10px 0 rgb(255, 122, 0), 2px 2px 4px 1px rgb(255, 193, 0);
+}
+
 .showPair {
   display: none;
 }
@@ -35,5 +39,21 @@ hr {
 }
 
 .intermission>.showIntermission {
+  display: block;
+}
+
+.showBeginning {
+  display: none;
+}
+
+.beginning>.showBeginning {
+  display: block;
+}
+
+.showEnd {
+  display: none;
+}
+
+.end>.showEnd {
   display: block;
 }
