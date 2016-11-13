@@ -42,7 +42,7 @@
                             <button class="waves-effect waves-red btn-flat" ng-click="data.questions.splice($index, 1)" style="margin-top: 20px; padding:0"><i class="material-icons">delete</i></button>
 
                         </div>
-                        <div class="row card-panel" ng-repeat="a in q.answers">
+                        <div class="row" ng-repeat="a in q.answers">
                             <div class="col s1"></div>
                             <div class="col s1">
                                 <input type="color" name="color" ng-model="a.color" style="margin-top: 20px;" />
@@ -60,7 +60,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col s1"><span sv-handle>H</span></div>
+                            <div class="col s1"></div>
                             <div class="col s11">
                                 <button class="btn waves-light" ng-click="newAnswer(q.answers)">Add Answer</button>
                             </div>
@@ -75,10 +75,6 @@
                             <div class="col s1">
                                 <button class="waves-effect waves-red btn-flat" ng-click="q.answers.splice($index, 1)" style="margin-top: 20px; padding:0"><i class="material-icons">delete</i></button>
                             </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col s1"><span sv-handle>H</span></div>
                         </div>
                     </div>
                 </div>
