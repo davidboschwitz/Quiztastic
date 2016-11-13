@@ -84,7 +84,7 @@ var APIMethods = module.exports = {
                 pos.num++;
             }
         } else if (pos.sub == 'question') {
-            if (data[pairCode].questions.answers.length == 0) {
+            if (data[pairCode].questions[pos.num].answers.length == 0) {
                 //this is a section header, not a question
                 pos.sub = 'question';
                 if (pos.num + 1 >= data[pairCode].questions.length) {
@@ -104,7 +104,7 @@ var APIMethods = module.exports = {
     },
     start: function(req) {
         req.session['pairCode'] = req.session['userID'] = undefined;
-        var pairCode = req.session['pairCode'] = req.body.pairCode;
+        var pairCode = req.session['pairCode'] = req.body.pairCode.toUpperCase();
         if (!data[pairCode]) {
             var current = {};
             current.users = [];
@@ -139,7 +139,7 @@ var APIMethods = module.exports = {
     join: function(req) {
         req.session['pairCode'] = req.session['userID'] = undefined;
         var name = req.body.name;
-        var pairCode = req.session['pairCode'] = req.body.pairCode;
+        var pairCode = req.session['pairCode'] = req.body.pairCode.toUpperCase();
         if (!data[pairCode])
             return {
                 error: {
@@ -187,15 +187,15 @@ var APIMethods = module.exports = {
     },
     isStarted: function(req) {
         return {
-            started: !!data[req.body.pairCode]
+            started: !!data[req.body.pairCode.toUpperCase()]
         };
     },
     hasJoined: function(req) {
-        if (!data[req.body.pairCode])
+        if (!data[req.body.pairCode.toUpperCase()])
             return {
                 joined: false
             }
-        var users = data[req.body.pairCode].users;
+        var users = data[req.body.pairCode.toUpperCase()].users;
         for (var i = 0; i < users.length; i++) {
             if (users[i].name == req.body.name)
                 return {
