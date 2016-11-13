@@ -16,7 +16,7 @@
                     <input type="text" name="quizID" id="quizID" ng-model="quizID" class="validate" autofocus ng-keypress="($event.which === 13)?loadQuiz():true" />
                 </div>
             </div>
-            <div class="col s1" style="text-align:center"><button class="btn waves-effect waves-light tooltipped" ng-click="loadQuiz()" style="margin-top: 20px; padding: 0 10px" data-position="bottom" data-delay="50" data-tooltip="Load"><i class="material-icons">file_download</i></div>
+            <div class="col s1" style="text-align:center"><button class="btn waves-effect waves-light tooltipped" ng-click="loadQuiz()" style="margin-top: 20px; padding: 0 10px" data-position="bottom" data-delay="50" data-tooltip="Load"><i class="material-icons">file_download</i></button></div>
             <div class="col s4"></div>
         </div>
         <hr/>
@@ -28,49 +28,58 @@
                 </div>
             </div>
             <div class="row card" ng-repeat="q in data.questions">
-                <div class="card-content">
-                    <div class="row">
-                        <div class="col s6 input-field">
-                            <label for="title">Question Title</label>
-                            <input type="text" name="title" id="title" ng-model="q.title" />
-                        </div>
-                        <div class="col s2 input-field">
-                            <input type="number" name="time" id="time" ng-model="q.time" min="-1" max="300" class="validate" />
-                            <label for="time" data-error="[-1~300]sec">Time Limit (-1 for no limit)</label>
-                        </div>
-                        <button class="waves-effect waves-red btn-flat" ng-click="data.questions.splice($index, 1)" style="margin-top: 20px; padding:0" ><i class="material-icons">delete</i></button>
+              <div class="card-content" ng-if="!q.isSection">
+                  <div class="row">
+                      <div class="col s6 input-field">
+                          <label for="title">Question Title</label>
+                          <input type="text" name="title" id="title" ng-model="q.title" />
+                      </div>
+                      <div class="col s2 input-field">
+                          <input type="number" name="time" id="time" ng-model="q.time" min="-1" max="300" class="validate" />
+                          <label for="time" data-error="[-1~300]sec">Time Limit (-1 for no limit)</label>
+                      </div>
+                      <button class="waves-effect waves-red btn-flat" ng-click="data.questions.splice($index, 1)" style="margin-top: 20px; padding:0"><i class="material-icons">delete</i></button>
 
-                    </div>
-                    <div class="row" ng-repeat="a in q.answers">
-                        <div class="col s1"></div>
-                        <div class="col s1">
-                            <input type="color" name="color" ng-model="a.color" style="margin-top: 20px;" />
-                        </div>
-                        <div class="input-field col s4">
-                            <input type="text" name="title" ng-model="a.title" />
-                            <label for="title">Answer</label>
-                        </div>
-                        <div class="input-field col s1">
-                            <input type="number" name="points" ng-model="a.points" class="validate" min="0" max="1000" />
-                            <label for="points" data-error="[0~1000]">Points</label>
-                        </div>
-                        <div class="col s1">
-                            <button class="waves-effect waves-red btn-flat" ng-click="q.answers.splice($index, 1)" style="margin-top: 20px; padding:0" ><i class="material-icons">delete</i></button>
+                  </div>
+                  <div class="row" ng-repeat="a in q.answers">
+                      <div class="col s1"></div>
+                      <div class="col s1">
+                          <input type="color" name="color" ng-model="a.color" style="margin-top: 20px;" />
+                      </div>
+                      <div class="input-field col s4">
+                          <input type="text" name="title" ng-model="a.title" />
+                          <label for="title">Answer</label>
+                      </div>
+                      <div class="input-field col s1">
+                          <input type="number" name="points" ng-model="a.points" class="validate" min="0" max="1000" />
+                          <label for="points" data-error="[0~1000]">Points</label>
+                      </div>
+                      <div class="col s1">
+                          <button class="waves-effect waves-red btn-flat" ng-click="q.answers.splice($index, 1)" style="margin-top: 20px; padding:0"><i class="material-icons">delete</i></button>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col s1"></div>
+                      <div class="col s11">
+                          <button class="btn waves-light" ng-click="newAnswer(q.answers)">Add Answer</button>
+                      </div>
+                  </div>
+              </div>
+              <div class="card-content" ng-if="q.isSection">
+                  <div class="row">
+                      <div class="col s6 input-field">
+                          <label for="title">Section Title</label>
+                          <input type="text" name="title" id="title" ng-model="q.title" />
+                      </div>
+                  </div>
+              </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col s1"></div>
-            <div class="col s11">
-                <button class="btn waves-light" ng-click="newAnswer(q.answers)">Add Answer</button>
+            <div class="row">
+                <button class="btn waves-light" ng-click="newQuestion()">Add Question</button>
+                <button class="btn waves-light" ng-click="newSection()">Add Section</button>
             </div>
-        </div>
-    </div>
-    </div>
-    <div class="row ">
-        <button class="btn waves-light" ng-click="newQuestion()">Add Question</button>
-    </div>
 
-    </div>
+        </div>
     </div>
 
     <!-- include script tags -->

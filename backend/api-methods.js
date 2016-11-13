@@ -65,10 +65,10 @@ var APIMethods = module.exports = {
             }
         }
         return {
-          error: {
-            code: 500,
-            message: 'incorrect pos.sub'
-          }
+            error: {
+                code: 500,
+                message: 'incorrect pos.sub'
+            }
         };
     },
     next: function(req) {
@@ -84,6 +84,16 @@ var APIMethods = module.exports = {
                 pos.num++;
             }
         } else if (pos.sub == 'question') {
+            if (data[pairCode].questions.answers.length == 0) {
+                //this is a section header, not a question
+                pos.sub = 'question';
+                if (pos.num + 1 >= data[pairCode].questions.length) {
+                    pos.sub = 'end';
+                } else {
+                    pos.num++;
+                }
+                return;
+            }
             pos.sub = 'intermission';
             var current = data[pairCode];
             var answers = current.answers[pos.num];

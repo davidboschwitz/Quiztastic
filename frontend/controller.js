@@ -253,14 +253,23 @@ angular.module('quizApp', [])
                 time: 30
             });
             $timeout(Materialize.updateTextFields, 500)
-        }
+        };
+
+        $scope.newSection = function() {
+            $scope.data.questions.push({
+                answers: [],
+                time: -1,
+                isSection: true
+            });
+            $timeout(Materialize.updateTextFields, 500)
+        };
 
         var defaultColors = ['#337ab7', '#c9302c', '#ec971f', '#5cb85c', '#5bc0de', '#6f5499']
         $scope.newAnswer = function(answers) {
             answers.push({
                 color: defaultColors[answers.length] || '#000000'
             });
-        }
+        };
 
         windowDebug($scope);
     });
