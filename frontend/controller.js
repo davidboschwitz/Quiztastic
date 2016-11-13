@@ -267,7 +267,8 @@ angular.module('quizApp', [])
         var defaultColors = ['#337ab7', '#c9302c', '#ec971f', '#5cb85c', '#5bc0de', '#6f5499']
         $scope.newAnswer = function(answers) {
             answers.push({
-                color: defaultColors[answers.length] || '#000000'
+                color: defaultColors[answers.length] || '#000000',
+                points: 0
             });
         };
 
