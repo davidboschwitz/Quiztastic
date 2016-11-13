@@ -31,7 +31,9 @@ angular.module('quizApp', [])
         ]);
     }])
     .service('httpService', httpService)
-    .value('Materialize', Materialize)
+    .service('Materialize', function() {
+        return Materialize;
+    })
     .factory('io', function(httpService) {
 
         var collection = [];
