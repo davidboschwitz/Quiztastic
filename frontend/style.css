@@ -18,6 +18,10 @@ hr {
   box-shadow: 0 5px 10px 0 rgb(255, 122, 0), 2px 2px 4px 1px rgb(255, 193, 0);
 }
 
+.pair>.next-fab {
+  display:none;
+}
+
 .showPair {
   display: none;
 }

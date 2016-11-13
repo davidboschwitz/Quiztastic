@@ -1,7 +1,9 @@
 <!doctype html>
 <html>
+
 <head>
 </head>
+
 <body ng-app="quizApp" ng-cloak style="background-color:#fbfbfb">
     <div ng-controller="PresenterController" ng-class="[data.showClass]">
         <h1 style="text-align:center;font-weight:200">{{data.title}}</h1>
@@ -28,17 +30,21 @@
             </div>
         </div>
         <div class="container showPair">
-            <div class="row">
-                <div class="input-field">
-                    <label for="code">Pairing Code</label>
-                    <input type="text" name="code" id="code" ng-model="code" />
+            <div class="row card" style="margin-top:180px">
+                <div class="card-content">
+                    <form ng-submit="pair()" autocomplete="off">
+                    <div class="input-field">
+                        <input type="text" name="code" id="code" ng-model="code" ng-change="checkIfStarted()" ng-class="[codeIsUsed]" />
+                        <label for="code" data-error="Pairing Code '{{code}}' has already started. Press pair to join or choose a different pair code" data-success="Ready to start using Pairing Code '{{code}}'" style="width: 100%;pointer-events: none;">Pairing Code</label>
+                    </div>
+                    <br/>
+                    <div class="input-field">
+                        <input type="text" name="quizID" id="quizID" ng-model="quizID" ng-change="checkIfExists()" ng-class="[quizExists]" ng-disabled="startJoin == 'join'"/>
+                        <label for="quizID" data-error="Question Set '{{quizID}}' does not exist" style="width: 100%;pointer-events: none;">Question Set</label>
+                    </div>
+                    <input type="submit" class="btn waves-effect waves-light" value="{{startJoin}}" />
+                  </form>
                 </div>
-                <div class="input-field">
-                    <label for="quizID">Question Set ({{quizID}})</label>
-                    <input type="text" name="quizID" id="quizID" ng-model="quizID" />
-                </div>
-                <button class="btn waves-light" ng-click="pair()">Pair</button>
-
             </div>
         </div>
         <div class="container showIntermission">
@@ -64,32 +70,40 @@
         </div>
         <div class="container showBeginning">
             <div class="row">
-                The quiz will begin soon...<br/>
-                Use pairing code {{code}} to join this session.
+                <!-- The quiz will begin soon...<br/> Use pairing code {{code}} to join this session. -->
+                <div class="col s3"></div>
+                <div class="col s6 card thirdbuffer">
+                    <div class="card-content" style="text-align:center;color:#4e4e4e">
+                      <h3>Pairing Code</h3>
+                      <hr/>
+                      <span style="font-family:impact; font-size:80px;">{{code}}</span>
+                    </div>
+                </div>
+                <div class="col s3"></div>
             </div>
         </div>
         <div class="container showEnd">
             <div class="row">
-              <table class="striped">
-                  <thead>
-                      <tr>
-                          <th data-field="Place">Place</th>
-                          <th data-field="Name">Name</th>
-                          <th data-field="Points">Total Points</th>
-                      </tr>
-                  </thead>
+                <table class="striped">
+                    <thead>
+                        <tr>
+                            <th data-field="Place">Place</th>
+                            <th data-field="Name">Name</th>
+                            <th data-field="Points">Total Points</th>
+                        </tr>
+                    </thead>
 
-                  <tbody>
-                      <tr ng-repeat="u in data.users | orderBy:'u.points'">
-                          <td>{{$index + 1}}</td>
-                          <td>{{u.name}}</td>
-                          <td>{{u.points}}</td>
-                      </tr>
-                  </tbody>
-              </table>
+                    <tbody>
+                        <tr ng-repeat="u in data.users | orderBy:'u.score'">
+                            <td>{{$index + 1 | ordinal}}</td>
+                            <td>{{u.name}}</td>
+                            <td>{{u.score}}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
-        <div class="fixed-action-btn">
+        <div class="fixed-action-btn next-fab">
             <a class="btn-floating btn-large red" ng-click="next()" ng-disabled="updating">
                 <i class="large material-icons" style="transform:rotate(90deg)">navigation</i>
             </a>
@@ -107,8 +121,11 @@
     <!-- Compiled and minified JavaScript -->
     <script src="assets/materialize/js/materialize.min.js"></script>
 
-     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
+    <script>
+    $('.thirdbuffer').css('margin-top', window.innerHeight / 5 + 'px')
+    </script>
 </body>
 
 </html>

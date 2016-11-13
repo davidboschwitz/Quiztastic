@@ -24,7 +24,7 @@ var APIMethods = module.exports = {
             var rtn = {};
             rtn.title = 'And the answer is...';
             rtn.showClass = 'intermission';
-            if (req.session['userID']) {
+            if (req.session['userID'] != undefined) {
                 rtn.question = current.questions[current.pos.num];
                 var answers = current.answers[current.pos.num];
                 for (var i = 0; i < answers.length; i++) {
@@ -38,6 +38,7 @@ var APIMethods = module.exports = {
                 rtn.question = current.questions[current.pos.num];
                 rtn.users = current.users;
             }
+            rtn.hash = rtn.showClass + current.pos.num + current.pos.sub;
             return rtn;
         } else if (current.pos.sub == 'question') {
 
@@ -45,18 +46,22 @@ var APIMethods = module.exports = {
                 title: current.questions[current.pos.num].title,
                 question: current.questions[current.pos.num],
                 showClass: 'question',
-                time: current.questions[current.pos.num].time
+                time: current.questions[current.pos.num].time,
+                hash: this.showClass + current.pos.num + current.pos.sub
             };
         } else if (current.pos.sub == 'beginning') {
             return {
                 showClass: 'beginning',
-                pairCode: pairCode
+                pairCode: pairCode,
+                title: 'Please wait for the quiz to start',
+                hash: this.showClass + current.pos.num + current.pos.sub
             }
         } else if (current.pos.sub == 'end') {
             return {
                 showClass: 'end',
                 title: 'Final Rankings',
-                users: current.users
+                users: current.users,
+                hash: this.showClass + current.pos.num + current.pos.sub
             }
         }
         var date = new Date();
@@ -83,12 +88,12 @@ var APIMethods = module.exports = {
             var current = data[pairCode];
             var answers = current.answers[pos.num];
             for (var i = 0; i < answers.length; i++) {
-                current.users[answers[i].userID].points = current.questions[pos.num].answers[answers[i].choice].points;
+                current.users[answers[i].userID].score += (current.questions[pos.num].answers[answers[i].choice].points || 0);
             }
         }
     },
     start: function(req) {
-
+        req.session['pairCode'] = req.session['userID'] = undefined;
         var pairCode = req.session['pairCode'] = req.body.pairCode;
         if (!data[pairCode]) {
             var current = {};
@@ -122,6 +127,7 @@ var APIMethods = module.exports = {
         }
     },
     join: function(req) {
+        req.session['pairCode'] = req.session['userID'] = undefined;
         var name = req.body.name;
         var pairCode = req.session['pairCode'] = req.body.pairCode;
         if(!data[pairCode])
@@ -166,6 +172,37 @@ var APIMethods = module.exports = {
                 message: 'ok - submitted choice' + choice
             }
         };
+    },
+    isStarted: function(req){
+      return {
+        started: !!data[req.body.pairCode]
+      };
+    },
+    hasJoined: function(req){
+      if(!data[req.body.pairCode])
+        return {
+          joined: false
+        }
+      var users = data[req.body.pairCode].users;
+      for(var i = 0; i < users.length; i++){
+        if(users[i].name == req.body.name)
+          return {
+            joined: true
+          }
+      }
+      return {
+        joined: false
+      }
+    },
+    exists: function(req){
+      if(req.body.quizID.length > 20){
+          return {
+            ugh: 'no'
+          }
+        }
+        return {
+          exists: fs.existsSync('quizzes/' + req.body.quizID.replace(/\./g,'') + '.json')
+        }
     },
     load: function(req) {
       if(req.body.quizID.length > 20){

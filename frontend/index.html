@@ -7,15 +7,15 @@
 
 </head>
 
-<body ng-app="quizApp">
+<body ng-app="quizApp" style="background-color:#fbfbfb">
     <div ng-controller="QuizController" ng-class="[data.showClass]">
-        <h1 style="text-align:center;font-weight:200">{{data.title}}</h1>
-        <hr/>
+        <!-- <h1 style="text-align:center;font-weight:200">{{data.title}}</h1>
+        <hr/> -->
         <div class="container showQuestion">
             <div class="row">
                 <div class="col s12 m6" ng-repeat="a in data.question.answers">
-                    <div class="card pop-answer" style="background-color:{{a.color}}; color:white;" ng-click="answer($index)" id="{{$index}}">
-                        <div class="card-content" style="min-height: 130px; display: table; width: 100%;">
+                    <div class="card pop-answer waves-effect waves-light" style="background-color:{{a.color}}; color:white; display:block" ng-click="answer($index)" id="{{$index}}">
+                        <div class="card-content" style="min-height: 100px; display: table; width: 100%;">
                             <div class="card-title" style="text-align: center; display: table-cell; vertical-align: middle; font-size: 64px; font-weight: 100;">
                                 {{a.title}}
                             </div>
@@ -27,56 +27,55 @@
                     </div>
                 </div>
             </div>
-            <hr/>
-            <div class="row">
-                <h3 style="text-align:center;font-weight:300">{{Math.floor(data.time / 60)}}:{{data.time % 60}}</h3>
-            </div>
         </div>
         <div class="container showPair">
-            <div class="row">
-                <form ng-submit="join()">
-                    <div class="input-field">
-                        <label for="code">Pairing Code</label>
-                        <input type="text" name="code" id="code" ng-model="code" />
+            <div class="row card thirdbuffer">
+                <form ng-submit="join()" class="card-content" autocomplete="off">
+                    <div class="row">
+                        <div class="col s4"></div>
+                        <span class="col s4" style="text-align:center"><button class="btn waves-effect waves-light" onclick="screenfull.toggle()">Toggle Fullscreen</button></span>
+                        <div class="col s4"></div>
                     </div>
                     <div class="input-field">
-                        <label for="name">Name</label>
-                        <input type="text" name="name" id="name" ng-model="name" />
+                        <input type="text" name="code" id="code" ng-model="code" pattern=".{1,30}" ng-change="checkIfStarted()" ng-class="[codeIsUsed]" required />
+                        <label for="code" data-error="Session with pairing code: '{{code}}' is not yet started." data-success="Ready to start using Pairing Code '{{code}}'" style="width: 100%;pointer-events: none;">Pairing Code</label>
                     </div>
-                    <button class="btn waves-light" ng-click="join()">Join</button>
+                    <div class="input-field">
+                        <input type="text" name="name" id="name" ng-model="name" pattern=".{1,30}" required ng-change="checkHasJoined()" ng-class="[nameIsUsed]" />
+                        <label for="name" data-error="Someone with the name '{{name}}' has already joined" style="width: 100%;pointer-events: none;">Name</label>
+                    </div>
+                    <input type="submit" class="btn waves-light" value="Join"></input>
                 </form>
 
             </div>
         </div>
         <div class="container showIntermission">
             <div class="row">
-                You answered {{data.question.answers[data.answer.choice].title}}, which earned you {{data.question.answers[data.answer.choice].points}}
+                You answered {{data.question.answers[data.answer.choice].title}}, which earned you {{data.question.answers[data.answer.choice].points}} points
             </div>
         </div>
         <div class="container showBeginning">
             <div class="row">
-                The quiz will begin soon...<br/> Use pairing code {{data.code}} to join this session.
+                The quiz will begin soon...
             </div>
         </div>
         <div class="container showEnd">
             <div class="row">
-                <table class="striped">
-                    <thead>
-                        <tr>
-                            <th data-field="Place">Place</th>
-                            <th data-field="Name">Name</th>
-                            <th data-field="Points">Total Points</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        <tr ng-repeat="a in data.ranks">
-                            <td>{{$index + 1}}</td>
-                            <td>{{a.name}}</td>
-                            <td>{{a.points}}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <h3>Good work, {{name}}!</h3>
+                <div class="card">
+                    <div class="card-content" style="text-align:center;color:#4e4e4e">
+                        <h3>Place</h3>
+                        <hr/>
+                        <span style="font-family:impact; font-size:80px;">{{rank | ordinal}}</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-content" style="text-align:center;color:#4e4e4e">
+                        <h3>Points</h3>
+                        <hr/>
+                        <span style="font-family:impact; font-size:80px;">{{data.users[userID].score}}</span>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- <div class="fixed-action-btn">
@@ -96,9 +95,13 @@
     <link rel="stylesheet" href="style.css">
     <!-- Compiled and minified JavaScript -->
     <script src="assets/materialize/js/materialize.min.js"></script>
+    <script src="assets/screenfull.js"></script>
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
+    <script>
+        $('.thirdbuffer').css('margin-top', window.innerHeight / 4 + 'px');
+    </script>
 </body>
 
 </html>

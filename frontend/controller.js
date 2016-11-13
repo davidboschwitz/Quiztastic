@@ -10,6 +10,14 @@ function httpService($http) {
 var endpoint = 'http://vps.boschwitz.me:3333/';
 
 angular.module('quizApp', [])
+// h/t http://ecommerce.shopify.com/c/ecommerce-design/t/ordinal-number-in-javascript-1st-2nd-3rd-4th-29259
+.filter('ordinal', function() {
+        return function(input) {
+            var s = ["th", "st", "nd", "rd"],
+                v = input % 100;
+            return input + (s[(v - 20) % 10] || s[v] || s[0]);
+        }
+    })
     .config(['$httpProvider', function($httpProvider) {
         $httpProvider.interceptors.push(['$q',
             function($q) {
@@ -50,7 +58,7 @@ angular.module('quizApp', [])
             },
             join: function(pairCode, name) {
                 return this.api('join', {
-                    pairCode: pairCode,
+                    pairCode: pairCode.toUpperCase(),
                     name: name
                 });
             },
@@ -62,17 +70,37 @@ angular.module('quizApp', [])
         return methods;
     })
     .factory('update', function(io, $timeout) {
-        return function($scope) {
+        return function($scope, force) {
             $scope.updating = true;
             $timeout(function($scope) {
                 io.update().then(function(res) {
-                    $scope.data = res.data;
+                    if (force || $scope.data.hash != res.data.hash)
+                        $scope.data = res.data;
                     $scope.updating = false
                 })
-            }, 500, true, $scope);
+            }, 500, true, $scope, force);
         };
     })
-    .controller('QuizController', function($scope, io, update, $interval) {
+    .factory('windowDebug', function(update) {
+        return function($scope) {
+            var tests = {
+                update: function() {
+                    update($scope, true)
+                },
+
+                outputScope: function() {
+                    // console.log($scope)
+                    return $scope;
+                },
+
+                stopRefresh: function() {
+                    $interval.cancel($scope.updateInterval);
+                }
+            };
+            return window.quiz = tests;
+        }
+    })
+    .controller('QuizController', function($scope, io, update, $interval, windowDebug) {
         $scope.data = {};
         $scope.data.showClass = 'pair';
         $scope.update = update;
@@ -81,25 +109,30 @@ angular.module('quizApp', [])
 
         $scope.join = function() {
             io.join($scope.code, $scope.name).then(function(res) {
-                $scope.userID = res.userID;
+                $scope.userID = res.data.userID;
                 $scope.answerFilter = {
                     userID: $scope.userID,
                     choice: '',
                     $: ''
                 };
             });
-            update($scope);
+            update($scope, true);
 
-            updateInterval = $interval(function() {
+            $scope.updateInterval = $interval(function() {
                 update($scope);
-                if ($scope.data.showClass == 'end')
-                    $interval.cancel(updateInterval);
+                if ($scope.data.showClass == 'end') {
+                    $interval.cancel($scope.updateInterval);
+                    var users = $scope.data.users;
+                    var rank = 1;
+                    for (var i = 0; i < users.length; i++) {
+                        if (i == $scope.userID) continue;
+                        if (users[i].score > users[$scope.userID])
+                            rank++;
+                    }
+                    $scope.rank = rank;
+                }
             }, 1000);
-        }
-
-        window.stopRefresh = function() {
-            $interval.cancel(updateInterval);
-        }
+        };
 
         $scope.answer = function(choice) {
             console.log('answer', choice);
@@ -107,13 +140,35 @@ angular.module('quizApp', [])
                 choice: choice
             });
             window.location.href = '#' + choice;
+        };
+
+        $scope.checkIfStarted = function() {
+            io.api('isStarted', {
+                pairCode: $scope.code
+            }).then(function(res) {
+                $scope.codeIsUsed = res.data.started ? 'valid' : 'invalid';
+                // console.log(res);
+            })
+        }
+        $scope.checkHasJoined = function() {
+            io.api('hasJoined', {
+                pairCode: $scope.code,
+                name: $scope.name
+            }).then(function(res) {
+                $scope.nameIsUsed = res.data.joined ? 'invalid' : 'valid';
+                // console.log(res);
+            })
         }
 
+
+        windowDebug($scope);
+
     })
-    .controller('PresenterController', function($scope, io, $interval, $timeout, update) {
-        window.io = $scope.io = io;
+    .controller('PresenterController', function($scope, io, $interval, $timeout, update, windowDebug) {
+        // window.io = $scope.io = io;
         $scope.data = {};
         $scope.data.showClass = 'pair';
+        $scope.startJoin = 'join';
 
         $scope.Math = Math;
         $interval(function() {
@@ -127,27 +182,40 @@ angular.module('quizApp', [])
         $scope.pair = function() {
             io.api('start', {
                 quizID: $scope.quizID,
-                pairCode: $scope.code
+                pairCode: $scope.code.toUpperCase()
             });
             //$scope.showClass = 'main';
             update($scope);
-        }
+        };
 
         $scope.next = function() {
             $scope.data.time = -1;
             io.api('next');
-            update($scope);
+            update($scope, true);
+        };
+
+        window.checkIfStarted = $scope.checkIfStarted = function() {
+            io.api('isStarted', {
+                pairCode: $scope.code
+            }).then(function(res) {
+                $scope.codeIsUsed = res.data.started ? 'invalid' : 'valid';
+                $scope.startJoin = res.data.started ? 'join' : 'start';
+                console.log(res);
+            })
         }
 
-        window.update = function() {
-            update($scope)
-        };
-        window.outputScope = function() {
-            console.log($scope)
-        };
+        $scope.checkIfExists = function() {
+            io.api('exists', {
+                quizID: $scope.quizID
+            }).then(function(res) {
+                $scope.quizExists = res.data.exists ? 'valid' : 'invalid';
+                console.log(res);
+            })
+        }
 
+        windowDebug($scope);
     })
-    .controller('AdminController', function($scope, io, Materialize, $timeout) {
+    .controller('AdminController', function($scope, io, Materialize, $timeout, windowDebug) {
         $scope.data = {};
         $scope.data.questions = [];
 
@@ -188,7 +256,8 @@ angular.module('quizApp', [])
                 color: defaultColors[answers.length] || '#000000'
             });
         }
-        console.log(Materialize);
+
+        windowDebug($scope);
     });
 
 function updateMaterializeText() {

@@ -13,7 +13,7 @@ app.use(session({
 }));
 
 app.use(function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', 'http://dbosch-surface');
+    res.header('Access-Control-Allow-Origin', 'http://david.boschwitz.me');
     res.header('Access-Control-Allow-Methods', 'GET,POST');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
     res.header('Access-Control-Allow-Credentials', 'true');
@@ -79,10 +79,11 @@ app.get('/test/:name', function(req, res) {
 });
 
 app.get("/test2", function(req, res) {
-    var rtn = {};
+    res.json(req.session);
+});
 
-    rtn.name = req.session['name'];
-
+app.get("/test3", function(req, res) {
+    req.session.regenerate();
     res.json(req.session);
 });
 
