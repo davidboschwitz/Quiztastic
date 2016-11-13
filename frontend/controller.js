@@ -195,12 +195,17 @@ angular.module('quizApp', [])
         };
 
         window.checkIfStarted = $scope.checkIfStarted = function() {
+            if ($scope.code == '') {
+                $scope.codeIsUsed = '';
+                $scope.startJoin = 'start';
+                return;
+            }
             io.api('isStarted', {
                 pairCode: $scope.code
             }).then(function(res) {
                 $scope.codeIsUsed = res.data.started ? 'invalid' : 'valid';
                 $scope.startJoin = res.data.started ? 'join' : 'start';
-                console.log(res);
+                // console.log(res);
             })
         }
 
