@@ -25,7 +25,7 @@
                 </div>
             </div>
             <hr/>
-            <div class="row">
+            <div class="row" ng-if="data.time >= 0">
                 <h3 style="text-align:center;font-weight:300">{{Math.floor(data.time / 60)}}:{{data.time % 60}}</h3>
             </div>
         </div>
@@ -33,17 +33,22 @@
             <div class="row card" style="margin-top:180px">
                 <div class="card-content">
                     <form ng-submit="pair()" autocomplete="off">
-                    <div class="input-field">
-                        <input type="text" name="code" id="code" ng-model="code" ng-change="checkIfStarted()" ng-class="[codeIsUsed]" />
-                        <label for="code" data-error="Pairing Code '{{code}}' has already started. Press pair to join or choose a different pair code" data-success="Ready to start using Pairing Code '{{code}}'" style="width: 100%;pointer-events: none;">Pairing Code</label>
-                    </div>
-                    <br/>
-                    <div class="input-field">
-                        <input type="text" name="quizID" id="quizID" ng-model="quizID" ng-change="checkIfExists()" ng-class="[quizExists]" ng-disabled="startJoin == 'join'"/>
-                        <label for="quizID" data-error="Question Set '{{quizID}}' does not exist" style="width: 100%;pointer-events: none;">Question Set</label>
-                    </div>
-                    <input type="submit" class="btn waves-effect waves-light" value="{{startJoin}}" />
-                  </form>
+                        <div class="row">
+                            <div class="col s4"></div>
+                            <span class="col s4" style="text-align:center"><button class="btn waves-effect waves-light" onclick="screenfull.toggle()">Toggle Fullscreen</button></span>
+                            <div class="col s4"></div>
+                        </div>
+                        <div class="input-field">
+                            <input type="text" name="code" id="code" ng-model="code" ng-change="checkIfStarted()" ng-class="[codeIsUsed]" />
+                            <label for="code" data-error="Pairing Code '{{code}}' has already started. Press pair to join or choose a different pair code" data-success="Ready to start using Pairing Code '{{code}}'" style="width: 100%;pointer-events: none;">Pairing Code</label>
+                        </div>
+                        <br/>
+                        <div class="input-field">
+                            <input type="text" name="quizID" id="quizID" ng-model="quizID" ng-change="checkIfExists()" ng-class="[quizExists]" ng-disabled="startJoin == 'join'" />
+                            <label for="quizID" data-error="Question Set '{{quizID}}' does not exist" style="width: 100%;pointer-events: none;">Question Set</label>
+                        </div>
+                        <input type="submit" class="btn waves-effect waves-light" value="{{startJoin}}" />
+                    </form>
                 </div>
             </div>
         </div>
@@ -74,13 +79,18 @@
                 <div class="col s3"></div>
                 <div class="col s6 card thirdbuffer">
                     <div class="card-content" style="text-align:center;color:#4e4e4e">
-                      <h3>Pairing Code</h3>
-                      <hr/>
-                      <span style="font-family:impact; font-size:80px;">{{code}}</span>
+                        <h3>Pairing Code</h3>
+                        <hr/>
+                        <span style="font-family:impact; font-size:80px;">{{code}}</span>
                     </div>
                 </div>
                 <div class="col s3"></div>
             </div>
+        </div>
+        <div class="container showSection" style="position: relative">
+            <h1 style="position: absolute; top: 50%; transform: translateY(-50%); text-align:center;">
+              Test section
+            </h1>
         </div>
         <div class="container showEnd">
             <div class="row">
@@ -120,11 +130,12 @@
     <link rel="stylesheet" href="style.css">
     <!-- Compiled and minified JavaScript -->
     <script src="assets/materialize/js/materialize.min.js"></script>
+    <script src="assets/screenfull.js"></script>
 
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
     <script>
-    $('.thirdbuffer').css('margin-top', window.innerHeight / 5 + 'px')
+        $('.thirdbuffer').css('margin-top', window.innerHeight / 5 + 'px')
     </script>
 </body>
 

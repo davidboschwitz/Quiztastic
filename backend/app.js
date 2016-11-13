@@ -90,3 +90,5 @@ app.get("/test3", function(req, res) {
 app.listen(3333, function() {
     console.log('Quiztastic backend listening on port 3333!');
 });
+
+console.log(process.cwd(), __dirname);

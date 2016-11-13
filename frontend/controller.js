@@ -31,9 +31,7 @@ angular.module('quizApp', [])
         ]);
     }])
     .service('httpService', httpService)
-    .service('Materialize', function() {
-        return Materialize;
-    })
+    .value('Materialize', Materialize)
     .factory('io', function(httpService) {
 
         var collection = [];
@@ -260,6 +258,4 @@ angular.module('quizApp', [])
         windowDebug($scope);
     });
 
-function updateMaterializeText() {
-    Materialize.updateTextFields();
-}
+$('.full-height').css('min-height', window.innerHeight);

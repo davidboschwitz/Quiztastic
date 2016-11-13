@@ -22,7 +22,7 @@ var APIMethods = module.exports = {
         }
         if (current.pos.sub == 'intermission') {
             var rtn = {};
-            rtn.title = 'And the answer is...';
+            rtn.title = current.questions[current.pos.num].title;
             rtn.showClass = 'intermission';
             if (req.session['userID'] != undefined) {
                 rtn.question = current.questions[current.pos.num];
@@ -53,7 +53,7 @@ var APIMethods = module.exports = {
             return {
                 showClass: 'beginning',
                 pairCode: pairCode,
-                title: 'Please wait for the quiz to start',
+                title: current.title,
                 hash: this.showClass + current.pos.num + current.pos.sub
             }
         } else if (current.pos.sub == 'end') {
@@ -64,12 +64,12 @@ var APIMethods = module.exports = {
                 hash: this.showClass + current.pos.num + current.pos.sub
             }
         }
-        var date = new Date();
         return {
-            blah: 'pleh',
-            date: date,
-            date_fin: date.setSeconds(date.getSeconds() + 60).toString(),
-        }
+          error: {
+            code: 500,
+            message: 'incorrect pos.sub'
+          }
+        };
     },
     next: function(req) {
         var pairCode = req.session['pairCode'];
@@ -100,7 +100,7 @@ var APIMethods = module.exports = {
             current.users = [];
             var quizID = req.body.quizID;
             console.log('\t Starting session[' + pairCode + '] using quizID[' + quizID + ']')
-            current = JSON.parse(fs.readFileSync('quizzes/' + quizID.replace(/\./g,'') + '.json', 'utf8'));
+            current = JSON.parse(fs.readFileSync(__dirname + '/quizzes/' + quizID.replace(/\./g, '') + '.json', 'utf8'));
             current.answers = [];
             for (var i = 0; i < current.questions.length; i++) {
                 current.answers[i] = [];
@@ -130,11 +130,13 @@ var APIMethods = module.exports = {
         req.session['pairCode'] = req.session['userID'] = undefined;
         var name = req.body.name;
         var pairCode = req.session['pairCode'] = req.body.pairCode;
-        if(!data[pairCode])
-        return {error:{
-          code: 1,
-          message: 'session with pairCode='+pairCode+' not yet created'
-        }}
+        if (!data[pairCode])
+            return {
+                error: {
+                    code: 1,
+                    message: 'session with pairCode=' + pairCode + ' not yet created'
+                }
+            }
         if (data[pairCode].users == undefined)
             data[pairCode].users = []
         var userID = req.session['userID'] = data[pairCode].users.length;
@@ -173,55 +175,60 @@ var APIMethods = module.exports = {
             }
         };
     },
-    isStarted: function(req){
-      return {
-        started: !!data[req.body.pairCode]
-      };
-    },
-    hasJoined: function(req){
-      if(!data[req.body.pairCode])
+    isStarted: function(req) {
         return {
-          joined: false
-        }
-      var users = data[req.body.pairCode].users;
-      for(var i = 0; i < users.length; i++){
-        if(users[i].name == req.body.name)
-          return {
-            joined: true
-          }
-      }
-      return {
-        joined: false
-      }
+            started: !!data[req.body.pairCode]
+        };
     },
-    exists: function(req){
-      if(req.body.quizID.length > 20){
-          return {
-            ugh: 'no'
-          }
+    hasJoined: function(req) {
+        if (!data[req.body.pairCode])
+            return {
+                joined: false
+            }
+        var users = data[req.body.pairCode].users;
+        for (var i = 0; i < users.length; i++) {
+            if (users[i].name == req.body.name)
+                return {
+                    joined: true
+                }
         }
         return {
-          exists: fs.existsSync('quizzes/' + req.body.quizID.replace(/\./g,'') + '.json')
+            joined: false
+        }
+    },
+    exists: function(req) {
+        if (req.body.quizID.length > 20) {
+            return {
+                ugh: 'no'
+            }
+        }
+        return {
+            exists: fs.existsSync(__dirname + '/quizzes/' + req.body.quizID.replace(/\./g, '') + '.json')
         }
     },
     load: function(req) {
-      if(req.body.quizID.length > 20){
-          return {
-            ugh: 'no'
-          }
+        if (req.body.quizID.length > 20) {
+            return {
+                ugh: 'no'
+            }
         }
-        return JSON.parse(fs.readFileSync('quizzes/' + req.body.quizID.replace(/\./g,'') + '.json', 'utf8'));
+        if (fs.existsSync(__dirname + '/quizzes/' + req.body.quizID.replace(/\./g, '') + '.json'))
+            return JSON.parse(fs.readFileSync(__dirname + '/quizzes/' + req.body.quizID.replace(/\./g, '') + '.json', 'utf8'));
+        return {
+            questions: [],
+            title: 'New Quiz'
+        };
     },
     save: function(req) {
-      if(req.body.quizID.length > 20){
-        return {
-          ugh: 'no'
+        if (req.body.quizID.length > 20) {
+            return {
+                ugh: 'no'
+            }
         }
-      }
-      fs.writeFileSync('quizzes/' + req.body.quizID.replace(/\./g,'') + '.json', JSON.stringify(req.body.data), 'utf8');
-      return {
-        status: 'ok'
-      }
+        fs.writeFileSync(__dirname + '/quizzes/' + req.body.quizID.replace(/\./g, '') + '.json', JSON.stringify(req.body.data), 'utf8');
+        return {
+            status: 'ok'
+        }
     },
     output: function() {
         return data;
