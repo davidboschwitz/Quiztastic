@@ -2,12 +2,12 @@
 A easy way to put on quizzes to a group of people, using their mobile device as a clicker.
 
 ### Links
-**Clicker**
+__Clicker__
 http://david.boschwitz.me/quiz
 
-**Presenter**
+__Presenter__
 http://david.boschwitz.me/projects/Quiztastic/frontend/presenter
 
-**Create and Edit Quizzes**
+__Create and Edit Quizzes__
 http://david.boschwitz.me/projects/Quiztastic/frontend/admin
 
