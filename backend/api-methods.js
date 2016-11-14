@@ -26,6 +26,7 @@ var APIMethods = module.exports = {
             rtn.showClass = 'intermission';
             if (req.session['userID'] != undefined) {
                 rtn.question = current.questions[current.pos.num];
+                rtn.users = current.users;
                 var answers = current.answers[current.pos.num];
                 for (var i = 0; i < answers.length; i++) {
                     if (answers[i].userID == req.session['userID']) {

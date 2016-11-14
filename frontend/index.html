@@ -51,7 +51,27 @@
         </div>
         <div class="container showIntermission">
             <div class="row">
-                You answered {{data.question.answers[data.answer.choice].title}}, which earned you {{data.question.answers[data.answer.choice].points}} points
+                <h4>You answered {{data.question.answers[data.answer.choice].title}}, which earned you {{data.question.answers[data.answer.choice].points}} point<span ng-if="data.question.answers[data.answer.choice].points != 1">s</span></h4>
+            </div>
+            <div class="row">
+                <div class="col s12">
+                    <div class="card">
+                        <div class="card-content" style="text-align:center;color:#4e4e4e">
+                            <h3>Current Place</h3>
+                            <hr/>
+                            <span style="font-family:impact; font-size:80px;">{{rank | ordinal}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col s12">
+                    <div class="card">
+                        <div class="card-content" style="text-align:center;color:#4e4e4e">
+                            <h3>Current Score</h3>
+                            <hr/>
+                            <span style="font-family:impact; font-size:80px;">{{data.users[userID].score}}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="container showBeginning">

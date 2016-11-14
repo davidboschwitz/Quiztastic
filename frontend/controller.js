@@ -131,6 +131,16 @@ angular.module('quizApp', [])
                     }
                     $scope.rank = rank;
                 }
+                if($scope.data.showClass == 'intermission'){
+                  var users = $scope.data.users;
+                  var rank = 1;
+                  for (var i = 0; i < users.length; i++) {
+                      if (i == $scope.userID) continue;
+                      if (users[i].score > users[$scope.userID])
+                          rank++;
+                  }
+                  $scope.rank = rank;
+                }
             }, 1000);
         };
 
