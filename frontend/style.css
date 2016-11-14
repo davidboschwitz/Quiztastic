@@ -6,66 +6,89 @@ hr {
     border-color: #ddd;
 }
 
-
 .show {
-  display: block;
+    display: block;
 }
+
 .hide {
-  display: none;
+    display: none;
 }
 
 .pop-answer:target {
-  box-shadow: 0 5px 10px 0 rgb(255, 122, 0), 2px 2px 4px 1px rgb(255, 193, 0);
+    box-shadow: 0 5px 10px 0 rgb(255, 122, 0), 2px 2px 4px 1px rgb(255, 193, 0);
+}
+
+
+/* label color */
+.input-field label {
+    color: #333740;
+}
+
+/* label focus color */
+.input-field input[type=text]:focus+label {
+    color: #333740;
+}
+
+.btn {
+  background-color:#333740;
+}
+
+/* label underline focus color */
+.input-field input[type=text]:focus {
+    border-bottom: 1px solid #333740;
+    box-shadow: 0 1px 0 0 #333740;
 }
 
 .pair>.next-fab {
-  display:none;
+    display: none;
 }
 
+/* screen changing CSS */
+
 .showPair {
-  display: none;
+    display: none;
 }
 
 .pair>.showPair {
-  display: block;
+    display: block;
 }
 
 .showQuestion {
-  display: none;
+    display: none;
 }
 
 .question>.showQuestion {
-  display: block;
+    display: block;
 }
 
 .showIntermission {
-  display: none;
+    display: none;
 }
 
 .intermission>.showIntermission {
-  display: block;
+    display: block;
 }
 
 .showBeginning {
-  display: none;
+    display: none;
 }
 
 .beginning>.showBeginning {
-  display: block;
+    display: block;
 }
 
 .showEnd {
-  display: none;
+    display: none;
 }
 
 .end>.showEnd {
-  display: block;
+    display: block;
 }
 
 .showSection {
-  display: none;
+    display: none;
 }
 
 .section>.showSection {
-  display: block;
+    display: block;
 }
