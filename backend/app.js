@@ -38,13 +38,13 @@ app.get('/', function(req, res) {
     res.send('Hello World!');
 });
 
-app.post('/admin', function(req, res) {
-
-});
-
+//stores all methods in object
 var indexMethods = require('./api-methods');
+
+//simple way to map out our methods
 app.post('/index', function(req, res) {
     console.log('index:' + req.body.method);
+    //send error if method is not defined
     if (!indexMethods[req.body.method])
         res.send({
             error: {
@@ -54,41 +54,43 @@ app.post('/index', function(req, res) {
         });
     else
         res.send(indexMethods[req.body.method](req))
+        //sends whatever the method returns
 });
 
-app.get('/pair/:code/:name', function(req, res) {
-    console.log('pair/' + req.params.code);
-    req.session['code'] = req.params.code;
-    res.send({
-        status: {
-            code: 200,
-            message: 'ok'
-        },
-        code: req.session['code']
-    })
-})
 
-app.get('/test/:name', function(req, res) {
-    var name = req.params.name;
-    var rtn = {}; //init an object to return
-    //rtn.quiz = JSON.parse(fs.readFileSync('sample_questions.json'));
-    rtn.name = name;
-    req.session['name'] = name;
-    //return the object in json format.
-    res.json(req.session);
-});
+// the following is now unused, but was useful for testing session info
 
-app.get("/test2", function(req, res) {
-    res.json(req.session);
-});
-
-app.get("/test3", function(req, res) {
-    req.session.regenerate();
-    res.json(req.session);
-});
+// app.get('/pair/:code/:name', function(req, res) {
+//     console.log('pair/' + req.params.code);
+//     req.session['code'] = req.params.code;
+//     res.send({
+//         status: {
+//             code: 200,
+//             message: 'ok'
+//         },
+//         code: req.session['code']
+//     })
+// })
+//
+// app.get('/test/:name', function(req, res) {
+//     var name = req.params.name;
+//     var rtn = {}; //init an object to return
+//     //rtn.quiz = JSON.parse(fs.readFileSync('sample_questions.json'));
+//     rtn.name = name;
+//     req.session['name'] = name;
+//     //return the object in json format.
+//     res.json(req.session);
+// });
+//
+// app.get("/test2", function(req, res) {
+//     res.json(req.session);
+// });
+//
+// app.get("/test3", function(req, res) {
+//     req.session.regenerate();
+//     res.json(req.session);
+// });
 
 app.listen(3333, function() {
     console.log('Quiztastic backend listening on port 3333!');
 });
-
-console.log(process.cwd(), __dirname);
