@@ -46,7 +46,7 @@ var APIMethods = module.exports = {
             return {
                 title: current.questions[current.pos.num].title,
                 question: current.questions[current.pos.num],
-                showClass: 'question',
+                showClass: data[pairCode].questions[pos.num].answers.length == 0 ? 'section' : 'question',
                 time: current.questions[current.pos.num].time,
                 hash: this.showClass + current.pos.num + current.pos.sub
             };
