@@ -173,7 +173,7 @@ angular.module('quizApp', [])
                     var rank = 1;
                     for (var i = 0; i < users.length; i++) {
                         if (i == $scope.userID) continue;
-                        if (users[i].score > users[$scope.userID])
+                        if (users[i].score > users[$scope.userID].score)
                             rank++;
                     }
                     $scope.rank = rank;
