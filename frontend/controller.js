@@ -352,11 +352,7 @@ angular.module('quizApp', [])
         }).error(function(error) {
             alert(error);
         }).success(function(res) {
-            if (res.data.error) {
-                alert(res.data.error.msg || res.data.error.message);
-            } else {
-                alert('saved!');
-            }
+            alert('saved')
         })
 
     }
