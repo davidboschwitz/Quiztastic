@@ -110,7 +110,7 @@
                     </thead>
 
                     <tbody>
-                        <tr ng-repeat="u in data.users | orderBy:'score'">
+                        <tr ng-repeat="u in data.users | orderBy:'-score'">
                             <td>{{$index + 1 | ordinal}}</td>
                             <td>{{u.name}}</td>
                             <td>{{u.score}}</td>
