@@ -77,6 +77,7 @@ var APIMethods = module.exports = {
                 showClass: 'beginning',
                 pairCode: pairCode,
                 title: current.title,
+                users: current.users,
                 hash: this.showClass + current.pos.num + current.pos.sub
             }
         } else if (current.pos.sub == 'end') {
@@ -270,7 +271,7 @@ var APIMethods = module.exports = {
             }
         };
     },
-    
+
     /**
      * Checks to see if a session using the paircode has been initialized in local memory
      */

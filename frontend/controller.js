@@ -189,7 +189,7 @@ angular.module('quizApp', [])
             io.api('answer', {
                 choice: choice
             }).error(function(error) {
-              alert(error);
+                alert(error);
             });
 
             //show the shadow around the selected choice
@@ -240,6 +240,9 @@ angular.module('quizApp', [])
 
     //interval to count down every second for
     $interval(function() {
+      //in the beginning, update every second to show which users have joined
+        if ($scope.data.showClass == 'beginning')
+            update($scope, true);
         if ($scope.data.time == 0) {
             //proceed to next screen when time reaches 0
             $scope.next();
@@ -346,14 +349,14 @@ angular.module('quizApp', [])
         io.api('save', {
             quizID: $scope.quizID,
             data: $scope.data
-        }).error(function(error){
-          alert(error);
-        }).success(function(res){
-          if(res.data.error){
-            alert(res.data.error.msg || res.data.error.message);
-          } else {
-            alert('saved!');
-          }
+        }).error(function(error) {
+            alert(error);
+        }).success(function(res) {
+            if (res.data.error) {
+                alert(res.data.error.msg || res.data.error.message);
+            } else {
+                alert('saved!');
+            }
         })
 
     }
