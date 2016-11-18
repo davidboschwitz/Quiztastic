@@ -188,6 +188,8 @@ angular.module('quizApp', [])
             //call the api
             io.api('answer', {
                 choice: choice
+            }).error(function(error) {
+              alert(error);
             });
 
             //show the shadow around the selected choice
@@ -344,6 +346,14 @@ angular.module('quizApp', [])
         io.api('save', {
             quizID: $scope.quizID,
             data: $scope.data
+        }).error(function(error){
+          alert(error);
+        }).success(function(res){
+          if(res.data.error){
+            alert(res.data.error.msg || res.data.error.message);
+          } else {
+            alert('saved!');
+          }
         })
 
     }
